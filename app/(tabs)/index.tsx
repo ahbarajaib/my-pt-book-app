@@ -22,6 +22,16 @@ export default function HomeScreen() {
     loadUserInfo();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      // Clear all stored data
+      await AsyncStorage.multiRemove(['userToken', 'userName']);
+      setUserName(null);
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+
   if (!userName) {
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -50,6 +60,12 @@ export default function HomeScreen() {
       <View style={styles.container}>
         <ThemedText style={styles.welcomeTitle}>Welcome back,</ThemedText>
         <ThemedText style={styles.userName}>{userName}</ThemedText>
+
+        <TouchableOpacity
+          style={[styles.button, styles.logoutButton]}
+          onPress={handleLogout}>
+          <ThemedText style={styles.buttonText}>Logout</ThemedText>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -79,6 +95,7 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 32,
     fontWeight: 'bold',
+    marginBottom: 40,  // Add space before logout button
   },
   buttonContainer: {
     width: '100%',
@@ -89,6 +106,11 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
+    minWidth: 200,  // Ensure minimum width for the logout button
+  },
+  logoutButton: {
+    marginTop: 20,
+    backgroundColor: '#DC3545',  // Red color for logout
   },
   buttonText: {
     color: 'white',

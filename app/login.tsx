@@ -9,9 +9,9 @@ import { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API_URL = Platform.select({
-    ios: 'http://localhost:5001/api',
-    android: 'http://10.0.2.2:5001/api', // Android emulator uses 10.0.2.2 to access host machine's localhost
-}) || 'http://localhost:5001/api';
+    ios: 'http://127.0.0.1:5001/api',
+    android: 'http://10.0.2.2:5001/api',
+}) || 'http://127.0.0.1:5001/api';
 
 export default function LoginScreen() {
     const router = useRouter();
