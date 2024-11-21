@@ -1,51 +1,176 @@
-# Welcome to your Expo app 👋
+# MyPTBookApp
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native application built with Expo.
 
-## Get started
+## Prerequisites
 
-1. Install dependencies
+Before you begin, ensure you have the following installed:
+- [Node.js](https://nodejs.org/) (version 18.20.4 specifically)
+- [npm](https://www.npmjs.com/)
+- [Expo CLI](https://docs.expo.dev/get-started/installation/)
+- [iOS Simulator](https://developer.apple.com/xcode/) (for iOS development)
+- [Android Studio](https://developer.android.com/studio) (for Android development)
 
-   ```bash
-   npm install
-   ```
+## Installation
 
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+1. Clone the repository:
 ```bash
-npm run reset-project
+git clone <your-repository-url>
+cd myptbookapp
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Install dependencies:
+```bash
+npm install
+```
 
-## Learn more
+3. Install iOS dependencies (iOS development only):
+```bash
+cd ios
+pod install
+cd ..
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Running the App
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Using Expo
 
-## Join the community
+```bash
+npm start
+```
 
-Join our community of developers creating universal apps.
+Then press:
+- `i` to run on iOS simulator
+- `a` to run on Android emulator
+- Scan the QR code with your phone's camera to run on your device (requires Expo Go app)
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
-# my-pt-book-app
+### Running on iOS
+
+```bash
+npm run ios
+```
+
+### Running on Android
+
+```bash
+npm run android
+```
+
+## Available Scripts
+
+- `npm start` - Start the Expo development server
+- `npm run reset-project` - Reset the project using custom script
+- `npm run android` - Run on Android
+- `npm run ios` - Run on iOS
+- `npm run web` - Run on web browser
+- `npm test` - Run tests in watch mode
+- `npm run lint` - Run linting
+
+## Tech Stack
+
+- React Native 0.76.2
+- Expo SDK 52
+- React Navigation 7
+- TypeScript
+- Jest for testing
+- Expo Router for navigation
+- React Native Reanimated for animations
+- Various Expo modules including:
+  - expo-blur
+  - expo-haptics
+  - expo-linking
+  - expo-router
+  - expo-splash-screen
+  - expo-status-bar
+  - expo-symbols
+
+## Development Notes
+
+- This project uses TypeScript for type safety
+- Navigation is handled by Expo Router
+- Supports iOS, Android, and Web platforms
+- Uses React Native's new architecture
+
+## Troubleshooting
+
+If you encounter any issues:
+
+1. Verify Node.js version:
+```bash
+node -v  # Should be v18.20.4
+```
+
+2. Clear watchman watches:
+```bash
+watchman watch-del-all
+```
+
+3. Delete node_modules and reinstall:
+```bash
+rm -rf node_modules
+npm install
+```
+
+4. Reset Metro bundler cache:
+```bash
+npm start -- --reset-cache
+```
+
+5. For iOS, clean and reinstall pods:
+```bash
+cd ios
+pod deintegrate
+pod install
+cd ..
+```
+
+## Project Structure
+
+```
+myptbookapp/
+├── app/
+│   ├── (tabs)/
+│   │   ├── index.tsx
+│   │   ├── explore.tsx
+│   │   └── _layout.tsx
+│   └── _layout.tsx
+├── components/
+│   ├── ui/
+│   │   ├── TabBarBackground.tsx
+│   │   ├── IconSymbol.tsx
+│   │   └── ...
+│   ├── HelloWave.tsx
+│   ├── ParallaxScrollView.tsx
+│   ├── ThemedText.tsx
+│   ├── ThemedView.tsx
+│   └── HapticTab.tsx
+├── hooks/
+│   └── useThemeColor.ts
+└── scripts/
+    └── reset-project.js
+```
+
+## Testing
+
+The project uses Jest for testing. Run tests with:
+```bash
+npm test
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+[Your chosen license]
+
+## Contact
+
+Your Name - [@yourtwitter](https://twitter.com/yourtwitter) - email@example.com
+
+Project Link: [https://github.com/yourusername/myptbookapp](https://github.com/yourusername/myptbookapp)
