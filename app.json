@@ -9,13 +9,19 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.myptbookapp",
+      "buildNumber": "1.0.0",
+      "displayName": "MyPTbookApp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.yourcompany.myptbookapp",
+      "versionCode": 1,
+      "displayName": "MyPTbookApp"
     },
     "web": {
       "bundler": "metro",
