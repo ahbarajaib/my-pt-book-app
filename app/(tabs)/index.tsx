@@ -1,36 +1,71 @@
-import { StyleSheet, TouchableOpacity, SafeAreaView, View, Platform, StatusBar } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, SafeAreaView, View, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
-
-const NASM_BLUE = '#004AAD';
+import { NASM_BLUE } from '@/constants/Colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeScreen() {
+  const [userName, setUserName] = useState<string | null>(null);
   const router = useRouter();
 
-  return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" backgroundColor="white" />
-      <View style={styles.mainContainer}>
-        <View style={styles.contentWrapper}>
-          <View style={styles.headerContainer}>
-            <ThemedText style={styles.title}>MY PT BOOK</ThemedText>
-            <ThemedText style={styles.subtitle}>Your Personal Training Companion</ThemedText>
-          </View>
+  useEffect(() => {
+    const loadUserInfo = async () => {
+      try {
+        const name = await AsyncStorage.getItem('userName');
+        setUserName(name);
+      } catch (error) {
+        console.error('Error loading user info:', error);
+      }
+    };
 
+    loadUserInfo();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      // Clear all stored data
+      await AsyncStorage.multiRemove(['userToken', 'userName']);
+      setUserName(null);
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+
+  if (!userName) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <ThemedText style={styles.title}>Welcome to MyPTbookApp</ThemedText>
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              style={[styles.button, styles.loginButton]}
+              style={styles.button}
               onPress={() => router.push('/login')}>
-              <ThemedText style={styles.loginButtonText}>LOGIN</ThemedText>
+              <ThemedText style={styles.buttonText}>Login</ThemedText>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.button, styles.registerButton]}
+              style={styles.button}
               onPress={() => router.push('/register')}>
-              <ThemedText style={styles.registerButtonText}>REGISTER</ThemedText>
+              <ThemedText style={styles.buttonText}>Register</ThemedText>
             </TouchableOpacity>
           </View>
         </View>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <ThemedText style={styles.welcomeTitle}>Welcome back,</ThemedText>
+        <ThemedText style={styles.userName}>{userName}</ThemedText>
+
+        <TouchableOpacity
+          style={[styles.button, styles.logoutButton]}
+          onPress={handleLogout}>
+          <ThemedText style={styles.buttonText}>Logout</ThemedText>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -41,78 +76,45 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-  mainContainer: {
+  container: {
     flex: 1,
-    backgroundColor: 'white',
-  },
-  contentWrapper: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0,
-    paddingBottom: 20,
-  },
-  headerContainer: {
-    flex: 1,
-    justifyContent: 'center',
+    padding: 20,
     alignItems: 'center',
-    paddingTop: Platform.OS === 'ios' ? 50 : 20,
+    justifyContent: 'center',
   },
   title: {
-    fontSize: 36,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: NASM_BLUE,
-    marginBottom: 16,
+    marginBottom: 40,
     textAlign: 'center',
-    includeFontPadding: false,
-    padding: 0,
-    lineHeight: 40,
   },
-  subtitle: {
-    fontSize: 18,
-    color: '#666',
-    textAlign: 'center',
-    includeFontPadding: false,
-    padding: 0,
-    lineHeight: 24,
+  welcomeTitle: {
+    fontSize: 24,
+    marginBottom: 10,
+  },
+  userName: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 40,  // Add space before logout button
   },
   buttonContainer: {
     width: '100%',
-    gap: 16,
-    marginBottom: Platform.OS === 'ios' ? 40 : 20,
+    gap: 20,
   },
   button: {
-    width: '100%',
-    height: 56,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  loginButton: {
     backgroundColor: NASM_BLUE,
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    minWidth: 200,  // Ensure minimum width for the logout button
   },
-  registerButton: {
-    backgroundColor: 'white',
-    borderWidth: 2,
-    borderColor: NASM_BLUE,
+  logoutButton: {
+    marginTop: 20,
+    backgroundColor: '#DC3545',  // Red color for logout
   },
-  loginButtonText: {
+  buttonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: '600',
-    letterSpacing: 1,
-  },
-  registerButtonText: {
-    color: NASM_BLUE,
-    fontSize: 18,
-    fontWeight: '600',
-    letterSpacing: 1,
   },
 });

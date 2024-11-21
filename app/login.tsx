@@ -1,26 +1,54 @@
 import { useState } from 'react';
-import { StyleSheet, TouchableOpacity, TextInput, SafeAreaView, Platform, StatusBar } from 'react-native';
+import { StyleSheet, TouchableOpacity, TextInput, SafeAreaView, Platform, StatusBar, Alert, View } from 'react-native';
 import { useRouter } from 'expo-router';
+import axios from 'axios';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import Colors, { NASM_BLUE } from '@/constants/Colors';
+import { AxiosError } from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const NASM_BLUE = '#004AAD';
+const API_URL = Platform.select({
+    ios: 'http://127.0.0.1:5001/api',
+    android: 'http://10.0.2.2:5001/api',
+}) || 'http://127.0.0.1:5001/api';
 
 export default function LoginScreen() {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleLogin = () => {
-        // Implement login logic here
-        console.log('Login:', email, password);
+    const handleLogin = async () => {
+        try {
+            const response = await axios.post(`${API_URL}/auth/login`, {
+                email,
+                password
+            });
+
+            // Store the token and user info
+            const { token, name } = response.data;
+            await AsyncStorage.setItem('userToken', token);
+            await AsyncStorage.setItem('userName', name);
+
+            // Navigate to home screen
+            router.replace('/(tabs)');
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            Alert.alert('Error', err.response?.data?.message || 'Login failed');
+        }
     };
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <StatusBar barStyle="dark-content" backgroundColor="white" />
+            <StatusBar />
             <ThemedView style={styles.container}>
-                <ThemedText style={styles.title}>Welcome Back</ThemedText>
+                <TouchableOpacity
+                    style={styles.backButton}
+                    onPress={() => router.back()}>
+                    <ThemedText style={styles.backButtonText}>← Back</ThemedText>
+                </TouchableOpacity>
+
+                <ThemedText type="title" style={styles.title}>Welcome Back</ThemedText>
 
                 <ThemedView style={styles.formContainer}>
                     <TextInput
@@ -30,6 +58,7 @@ export default function LoginScreen() {
                         onChangeText={setEmail}
                         autoCapitalize="none"
                         keyboardType="email-address"
+                        placeholderTextColor="#999"
                     />
 
                     <TextInput
@@ -38,17 +67,19 @@ export default function LoginScreen() {
                         value={password}
                         onChangeText={setPassword}
                         secureTextEntry
+                        placeholderTextColor="#999"
                     />
 
-                    <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                    <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
                         <ThemedText style={styles.buttonText}>Login</ThemedText>
                     </TouchableOpacity>
 
-                    <TouchableOpacity
-                        style={styles.linkButton}
-                        onPress={() => router.back()}>
-                        <ThemedText style={styles.linkText}>Back to Home</ThemedText>
-                    </TouchableOpacity>
+                    <View style={styles.registerContainer}>
+                        <ThemedText style={styles.registerText}>Don't have an account? </ThemedText>
+                        <TouchableOpacity onPress={() => router.push('/register')}>
+                            <ThemedText style={styles.registerLink}>Register</ThemedText>
+                        </TouchableOpacity>
+                    </View>
                 </ThemedView>
             </ThemedView>
         </SafeAreaView>
@@ -63,13 +94,16 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        justifyContent: 'center',
-        backgroundColor: 'white',
+    },
+    backButton: {
+        marginTop: 10,
+        marginBottom: 20,
+    },
+    backButtonText: {
+        fontSize: 18,
+        color: NASM_BLUE,
     },
     title: {
-        fontSize: 32,
-        fontWeight: 'bold',
-        color: NASM_BLUE,
         marginBottom: 40,
         textAlign: 'center',
     },
@@ -85,23 +119,29 @@ const styles = StyleSheet.create({
         fontSize: 16,
         backgroundColor: 'white',
     },
-    button: {
+    loginButton: {
         backgroundColor: NASM_BLUE,
         padding: 15,
         borderRadius: 10,
         alignItems: 'center',
+        marginTop: 10,
     },
     buttonText: {
         color: 'white',
         fontSize: 18,
         fontWeight: '600',
     },
-    linkButton: {
-        alignItems: 'center',
-        marginTop: 10,
+    registerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: 20,
     },
-    linkText: {
-        color: NASM_BLUE,
+    registerText: {
         fontSize: 16,
+    },
+    registerLink: {
+        fontSize: 16,
+        color: NASM_BLUE,
+        fontWeight: '600',
     },
 }); 
