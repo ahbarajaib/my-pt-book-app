@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, SafeAreaView, View, TouchableOpacity, Platform, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 import { NASM_BLUE } from '@/constants/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Homepage } from '@/components/Homepage';
 
 export default function HomeScreen() {
   const [userName, setUserName] = useState<string | null>(null);
@@ -24,7 +25,6 @@ export default function HomeScreen() {
 
   const handleLogout = async () => {
     try {
-      // Clear all stored data
       await AsyncStorage.multiRemove(['userToken', 'userName']);
       setUserName(null);
     } catch (error) {
@@ -36,16 +36,24 @@ export default function HomeScreen() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <ThemedText style={styles.title}>Welcome to MyPTbookApp</ThemedText>
-          <View style={styles.buttonContainer}>
+          <View style={styles.logoContainer}>
+            <Image 
+              source={require('@/assets/images/logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+          </View>
+          <View style={styles.bottomButtonContainer}>
             <TouchableOpacity
               style={styles.button}
+              activeOpacity={0.8}
               onPress={() => router.push('/login')}>
               <ThemedText style={styles.buttonText}>Login</ThemedText>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.button}
+              style={[styles.button, styles.registerButton]}
+              activeOpacity={0.8}
               onPress={() => router.push('/register')}>
               <ThemedText style={styles.buttonText}>Register</ThemedText>
             </TouchableOpacity>
@@ -57,16 +65,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <ThemedText style={styles.welcomeTitle}>Welcome back,</ThemedText>
-        <ThemedText style={styles.userName}>{userName}</ThemedText>
-
-        <TouchableOpacity
-          style={[styles.button, styles.logoutButton]}
-          onPress={handleLogout}>
-          <ThemedText style={styles.buttonText}>Logout</ThemedText>
-        </TouchableOpacity>
-      </View>
+      <Homepage userName={userName} onLogout={handleLogout} />
     </SafeAreaView>
   );
 }
@@ -74,47 +73,59 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#EEF6FF',
+    position: 'relative',
   },
   container: {
     flex: 1,
-    padding: 20,
+    padding: 24,
+    backgroundColor: '#EEF6FF',
+  },
+  logoContainer: {
+    position: 'absolute',
+    top: '20%',
+    left: 0,
+    right: 0,
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 40,
-    textAlign: 'center',
+  logo: {
+    width: 400,
+    height: 400,
   },
-  welcomeTitle: {
-    fontSize: 24,
-    marginBottom: 10,
-  },
-  userName: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 40,  // Add space before logout button
-  },
-  buttonContainer: {
+  bottomButtonContainer: {
     width: '100%',
-    gap: 20,
+    gap: 16,
+    position: 'absolute',
+    bottom: Platform.OS === 'ios' ? 44 : 32,
+    left: 24,
+    right: 24,
   },
   button: {
     backgroundColor: NASM_BLUE,
-    padding: 15,
-    borderRadius: 10,
+    minHeight: 44,
+    paddingVertical: Platform.OS === 'ios' ? 16 : 14,
+    paddingHorizontal: 20,
+    borderRadius: 12,
     alignItems: 'center',
-    minWidth: 200,  // Ensure minimum width for the logout button
+    justifyContent: 'center',
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.20,
+    shadowRadius: 6,
+    elevation: 6,
   },
-  logoutButton: {
-    marginTop: 20,
-    backgroundColor: '#DC3545',  // Red color for logout
+  registerButton: {
+    backgroundColor: NASM_BLUE,
   },
   buttonText: {
-    color: 'white',
-    fontSize: 18,
+    color: '#FFFFFF',
+    fontSize: Platform.OS === 'ios' ? 17 : 16,
     fontWeight: '600',
+    letterSpacing: 0.5,
+    lineHeight: 22,
   },
 });
